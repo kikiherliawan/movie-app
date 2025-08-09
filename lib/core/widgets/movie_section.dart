@@ -31,7 +31,7 @@ class MovieSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16),
             child: SizedBox(
-              height: 150,
+              height: 130,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: movies.length,

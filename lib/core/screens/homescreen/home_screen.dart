@@ -57,17 +57,23 @@ class _MovieListScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            MovieSection(
-              title: 'Trending',
-              movies: movieController.trendingMovies,
+            Expanded(
+              child: MovieSection(
+                title: 'Trending',
+                movies: movieController.trendingMovies,
+              ),
             ),
-            MovieSection(
-              title: 'Populer',
-              movies: movieController.popularMovies,
+            Expanded(
+              child: MovieSection(
+                title: 'Populer',
+                movies: movieController.popularMovies,
+              ),
             ),
-            MovieSection(
-              title: 'Korean Dramas',
-              movies: movieController.koreanDramas,
+            Expanded(
+              child: MovieSection(
+                title: 'Korean Dramas',
+                movies: movieController.koreanDramas,
+              ),
             ),
           ],
         ),

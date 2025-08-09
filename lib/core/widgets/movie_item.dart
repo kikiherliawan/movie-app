@@ -53,7 +53,7 @@ class MovieGridWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: Image.network(
                         '$imageUrl${movie.posterPath}',
-                        height: 130,
+                        height: 150,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
