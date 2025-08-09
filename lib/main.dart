@@ -2,14 +2,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/core/screens/movie_list_screen/movie_list_screen.dart';
+import 'package:movie_app/core/bindings/initial_binding.dart';
+import 'package:movie_app/core/routes/app_pages.dart';
+import 'package:movie_app/core/routes/app_routes.dart';
 import 'package:movie_app/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load environment variables from .env file
   await dotenv.load(fileName: ".env");
 
+  // Initialize Firebase instance
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -22,11 +26,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Movie App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        fontFamily: 'Poppins',
       ),
-      home: MovieListScreen(),
+      initialRoute: AppRoutes.LOGIN,
+      getPages: AppPages.routes,
+      initialBinding: InitialBinding(),
     );
   }
 }

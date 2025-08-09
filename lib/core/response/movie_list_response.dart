@@ -11,14 +11,14 @@ String movieListResponseToJson(MovieListResponse data) =>
     json.encode(data.toJson());
 
 class MovieListResponse {
-  Dates dates;
+  Dates? dates; // bikin nullable
   int page;
   List<Result> results;
   int totalPages;
   int totalResults;
 
   MovieListResponse({
-    required this.dates,
+    this.dates,
     required this.page,
     required this.results,
     required this.totalPages,
@@ -27,7 +27,7 @@ class MovieListResponse {
 
   factory MovieListResponse.fromJson(Map<String, dynamic> json) =>
       MovieListResponse(
-        dates: Dates.fromJson(json["dates"]),
+        dates: json["dates"] != null ? Dates.fromJson(json["dates"]) : null,
         page: json["page"],
         results: List<Result>.from(
           json["results"].map((x) => Result.fromJson(x)),
@@ -37,7 +37,7 @@ class MovieListResponse {
       );
 
   Map<String, dynamic> toJson() => {
-    "dates": dates.toJson(),
+    if (dates != null) "dates": dates!.toJson(),
     "page": page,
     "results": List<dynamic>.from(results.map((x) => x.toJson())),
     "total_pages": totalPages,
@@ -98,20 +98,24 @@ class Result {
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    adult: json["adult"],
-    backdropPath: json["backdrop_path"],
-    genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
-    id: json["id"],
-    originalLanguage: json["original_language"],
-    originalTitle: json["original_title"],
-    overview: json["overview"],
-    popularity: json["popularity"]?.toDouble(),
-    posterPath: json["poster_path"],
-    releaseDate: DateTime.parse(json["release_date"]),
-    title: json["title"],
-    video: json["video"],
-    voteAverage: json["vote_average"]?.toDouble(),
-    voteCount: json["vote_count"],
+    adult: json["adult"] ?? false,
+    backdropPath: json["backdrop_path"] ?? '',
+    genreIds: List<int>.from(json["genre_ids"]?.map((x) => x) ?? []),
+    id: json["id"] ?? 0,
+    originalLanguage: json["original_language"] ?? '',
+    originalTitle: json["original_title"] ?? '',
+    overview: json["overview"] ?? '',
+    popularity: (json["popularity"] ?? 0).toDouble(),
+    posterPath: json["poster_path"] ?? '',
+    releaseDate:
+        json["release_date"] != null &&
+            json["release_date"].toString().isNotEmpty
+        ? DateTime.parse(json["release_date"])
+        : DateTime(1900),
+    title: json["title"] ?? '',
+    video: json["video"] ?? false,
+    voteAverage: (json["vote_average"] ?? 0).toDouble(),
+    voteCount: json["vote_count"] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {

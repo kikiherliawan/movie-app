@@ -1,127 +1,92 @@
-import 'package:movie_app/core/controller/movie_list_controller/movie_filter.dart';
+import 'package:movie_app/core/network/dio_api_client.dart';
 import 'package:movie_app/core/response/movie_list_response.dart';
-import 'package:movie_app/core/services/movie_service.dart';
 import 'package:get/get.dart';
-import 'package:movie_app/core/services/search_service.dart';
-import 'package:movie_app/core/state/remote_state.dart';
 
 class MovieListController extends GetxController {
-  final MovieService movieService;
+  final DioApiClient _client = DioApiClient();
 
-  MovieListController({required this.movieService});
+  var isLoading = false.obs;
+  var isLoadingMore = false.obs; // tambahan buat loading bawah
+  var movies = <Result>[].obs;
+  var errorMessage = ''.obs;
 
-  final SearchService searchService = Get.put(SearchService());
+  // State search & filter
+  var isSearching = false.obs;
+  var searchQuery = ''.obs;
+  int? currentGenre;
+  int? currentYear;
 
-  final Rx<RemoteState> _pagingState = Rx<RemoteState>(RemoteStateNone());
+  // Pagination
+  int currentPage = 1;
+  int totalPages = 1;
 
-  get pagingState => _pagingState.value;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchMovies(reset: true);
+  }
 
-  final RxInt _currentPage = 1.obs;
-
-  get currentPage => _currentPage.value;
-
-  final Rx<List<Result>> _movieList = Rx<List<Result>>([]);
-
-  get movieList => _movieList.value;
-
-  Future<List<Result>> getMovieList(String filter, int page) async {
+  Future<void> fetchMovies({bool reset = false}) async {
     try {
-      if (_pagingState.value is RemoteStateLoading) {
-        return _movieList.value; // Return current list if already loading
-      }
-
-      _pagingState.value = RemoteStateLoading();
-
-      final result = await movieService.fetchMovies(filter, page);
-
-      if (result.results.isEmpty) {
-        _pagingState.value = RemoteStateError('No more movies found');
+      if (reset) {
+        isLoading.value = true;
+        currentPage = 1;
+        movies.clear();
       } else {
-        _pagingState.value = RemoteStateSuccess<MovieListResponse>(result);
-
-        _currentPage.value = result.page;
-        _movieList.value = _movieList.value + result.results;
+        if (isLoadingMore.value || currentPage > totalPages) return;
+        isLoadingMore.value = true;
       }
 
-      return result.results;
-    } on Exception catch (e) {
-      _pagingState.value = RemoteStateError(e.toString());
-      rethrow;
+      errorMessage.value = '';
+
+      String endpoint;
+      Map<String, dynamic> params = {
+        "page": currentPage,
+        "include_adult": true,
+      };
+
+      if (isSearching.value && searchQuery.value.isNotEmpty) {
+        endpoint = '/search/movie';
+        params['query'] = searchQuery.value;
+      } else if (currentGenre != null || currentYear != null) {
+        endpoint = '/discover/movie';
+        if (currentGenre != null) params['with_genres'] = currentGenre;
+        if (currentYear != null) params['primary_release_year'] = currentYear;
+        params['sort_by'] = 'popularity.desc';
+      } else {
+        endpoint = '/discover/movie';
+        params['sort_by'] = 'popularity.desc';
+      }
+
+      final response = await _client.dio.get(endpoint, queryParameters: params);
+      final movieList = MovieListResponse.fromJson(response.data);
+
+      totalPages = movieList.totalPages;
+      movies.addAll(movieList.results);
+      currentPage++;
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+      isLoadingMore.value = false;
     }
   }
 
-  /// **
-  /// Filter movie business logic ###############################################
-  /// **
-
-  final RxString _selectedFilter = MovieFilter.nowPlaying.name.obs;
-
-  get selectedFilter => _selectedFilter.value;
-
-  setFilter(MovieFilter filter) {
-    if (_selectedFilter.value != filter.name) {
-      if (!filter.name.contains('@')) {
-        _movieList.value = [];
-        _currentPage.value = 1;
-        _pagingState.value = RemoteStateNone();
-        getMovieList(filter.name, _currentPage.value);
-      }
-      _selectedFilter.value = filter.name;
-    }
-  }
-
-  /// **
-  /// Search business logic ###############################################
-  /// **
-
-  final RxBool _isSearching = false.obs;
-
-  get isSearching => _isSearching.value;
-
-  setIsSearching(bool value) {
-    _isSearching.value = value;
+  void setIsSearching(bool value) {
+    isSearching.value = value;
     if (!value) {
-      _searchQuery.value = '';
-      _movieList.value = [];
-      _currentPage.value = 1;
-      _pagingState.value = RemoteStateNone();
-      getMovieList(_selectedFilter.value, _currentPage.value);
+      searchQuery.value = '';
+      fetchMovies(reset: true);
     }
   }
 
-  final RxString _searchQuery = ''.obs;
-
-  get searchQuery => _searchQuery.value;
-
-  setSearchQuery(String query) {
-    _searchQuery.value = query;
-  }
-
-  Future<List<Result>> searchMovie(String query, int page) async {
-    try {
-      if (_pagingState.value is RemoteStateLoading) {
-        return _movieList.value; // Return current list if already loading
-      }
-
-      _pagingState.value = RemoteStateLoading();
-
-      if (page == 1) _movieList.value = [];
-
-      final result = await searchService.searchMovies(query, page);
-
-      if (result.results.isEmpty) {
-        _pagingState.value = RemoteStateError('No more movies found');
-      } else {
-        _pagingState.value = RemoteStateSuccess<MovieListResponse>(result);
-
-        _currentPage.value = result.page;
-        _movieList.value = _movieList.value + result.results;
-      }
-
-      return result.results;
-    } on Exception catch (e) {
-      _pagingState.value = RemoteStateError(e.toString());
-      rethrow;
+  void searchMovies(String query) {
+    searchQuery.value = query;
+    if (query.isEmpty) {
+      setIsSearching(false);
+    } else {
+      setIsSearching(true);
+      fetchMovies(reset: true);
     }
   }
 }
