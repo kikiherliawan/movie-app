@@ -76,14 +76,12 @@ class MovieSearchFilterWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final movie = controller.results[index];
                 return ListTile(
-                  leading: movie.posterPath != null
-                      ? Image.network(
-                          'https://image.tmdb.org/t/p/w92${movie.posterPath}',
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(Icons.movie),
-                  title: Text(movie.title ?? '-'),
-                  subtitle: Text('Release: ${movie.releaseDate ?? 'Unknown'}'),
+                  leading: Image.network(
+                    'https://image.tmdb.org/t/p/w92${movie.posterPath}',
+                    fit: BoxFit.cover,
+                  ),
+                  title: Text(movie.title),
+                  subtitle: Text('Release: ${movie.releaseDate}'),
                 );
               },
             );
