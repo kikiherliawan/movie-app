@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:movie_app/core/routes/app_routes.dart';
 import 'package:movie_app/core/services/auth_service.dart';
 
 class AuthController extends GetxController {
