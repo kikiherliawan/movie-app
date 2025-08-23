@@ -23,11 +23,12 @@ Proyek ini dibangun menggunakan Flutter dan beberapa library berikut:
 - get – State management & navigasi.
 - infinite_scroll_pagination – Pagination data list.
 
-# Cara Menjalankan:
+# Cara Menjalankan pada local:
 1. Clone repository
 2. Masuk ke folder project
 3. Install dependencies
 4. Tambahkan file .env untuk API key & konfigurasi Firebase.
 5. Jalankan aplikasi
 
-
+# Build APK
+https://drive.google.com/file/d/1R4tfocOIA4o6JRk29CJ0r5YQn2I7Kw7P/view?usp=sharing
