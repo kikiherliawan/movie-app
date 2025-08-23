@@ -15,10 +15,12 @@ class SplashController extends GetxController
 
   @override
   void onInit() {
+    super.onInit();
+
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 4),
-    )..forward();
+    );
 
     _animation = Tween<double>(
       begin: -1,
@@ -35,15 +37,34 @@ class SplashController extends GetxController
       end: 24,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.bounceOut));
 
-    super.onInit();
+    _startAnimation();
+  }
 
-    Future.delayed(Duration(seconds: 4), () {
+  void _startAnimation() async {
+    try {
+      // Start animation
+      await _controller.forward();
+
+      // Wait a bit more after animation completes
+      await Future.delayed(Duration(milliseconds: 500));
+
+      // Stop animation before navigate
+      _controller.stop();
+
+      // Navigate
       Get.offAllNamed(AppRoutes.AUTHWRAPPER);
-    });
+    } catch (e) {
+      // Handle any animation errors
+      print('Animation error: $e');
+      Get.offAllNamed(AppRoutes.AUTHWRAPPER);
+    }
   }
 
   @override
   void dispose() {
+    if (_controller.isAnimating) {
+      _controller.stop();
+    }
     _controller.dispose();
     super.dispose();
   }

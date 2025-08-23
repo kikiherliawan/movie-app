@@ -26,7 +26,7 @@ class Splashscreen extends StatelessWidget {
                     height: controller.scaleAnimation.value,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('images/movies.png'),
+                        image: AssetImage('assets/images/movies.png'),
                       ),
                     ),
                   ),
