@@ -83,6 +83,7 @@ class MovieGridWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                    SizedBox(height: 4),
                   ],
                 ),
               );

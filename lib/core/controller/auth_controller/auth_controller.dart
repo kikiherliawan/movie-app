@@ -14,21 +14,30 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     user.bindStream(_authService.authStateChanges);
-    ever(user, _setInitialScreen);
+    ever(user, _handlerUserChanged);
     super.onInit();
   }
 
   @override
   void onClose() {}
 
-  void _setInitialScreen(User? user) {
-    if (user == null) {
-      Get.offAllNamed(AppRoutes.LOGIN);
-    } else {
+  //logic hendle user sudah login atau belum, jika login fetchUsername (username user) kepanggil atau user logout username kosong
+  void _handlerUserChanged(User? user) {
+    if (user != null) {
       fetchUsername();
-      Get.offAllNamed(AppRoutes.MAIN);
+    } else {
+      username.value = '';
     }
   }
+
+  // void _setInitialScreen(User? user) {
+  //   if (user == null) {
+  //     Get.offAllNamed(AppRoutes.LOGIN);
+  //   } else {
+  // fetchUsername();
+  //     Get.offAllNamed(AppRoutes.MAIN);
+  //   }
+  // }
 
   Future<void> fetchUsername() async {
     final uid = _authService.currentUser?.uid;

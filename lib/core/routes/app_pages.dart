@@ -1,12 +1,16 @@
 import 'package:get/get.dart';
+import 'package:movie_app/core/controller/auth_controller/auth_wrapper/auth_wrapper.dart';
 import 'package:movie_app/core/routes/app_routes.dart';
 import 'package:movie_app/core/screens/main/mainscreen.dart';
 import 'package:movie_app/core/screens/movie_detail_screen/movie_detail_screen.dart';
 import 'package:movie_app/core/screens/register_screen/register_screen.dart';
 import 'package:movie_app/core/screens/sign_in_screen/sign_in.dart';
+import 'package:movie_app/core/screens/splashscreen/splashscreen.dart';
 
 class AppPages {
   static final routes = [
+    GetPage(name: AppRoutes.SPLASH, page: () => Splashscreen()),
+    GetPage(name: AppRoutes.AUTHWRAPPER, page: () => AuthWrapper()),
     GetPage(name: AppRoutes.LOGIN, page: () => SignInScreen()),
     GetPage(name: AppRoutes.REGISTER, page: () => RegisterScreen()),
     GetPage(

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_app/core/bindings/initial_binding.dart';
 import 'package:movie_app/core/routes/app_pages.dart';
 import 'package:movie_app/core/routes/app_routes.dart';
@@ -29,9 +30,9 @@ class MyApp extends StatelessWidget {
       title: 'Movie App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        fontFamily: 'Poppins',
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
       ),
-      initialRoute: AppRoutes.LOGIN,
+      initialRoute: AppRoutes.SPLASH,
       getPages: AppPages.routes,
       initialBinding: InitialBinding(),
     );
