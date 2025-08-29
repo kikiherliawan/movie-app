@@ -35,7 +35,22 @@ class MovieDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network('$imageUrl${movie.posterPath}'),
+              AspectRatio(
+                aspectRatio: 2 / 3,
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(24),
+                    child: Image.network(
+                      '$imageUrl${movie.posterPath}',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(height: 16),
               Text(
                 movie.title,

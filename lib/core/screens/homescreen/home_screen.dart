@@ -40,7 +40,13 @@ class _MovieListScreenState extends State<HomeScreen> {
                         children: [
                           Padding(padding: EdgeInsetsGeometry.only(left: 24)),
                           Obx(
-                            () => Text('Hi, ${authController.username.value}'),
+                            () => Text(
+                              'Hi, ${authController.username.value}',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                           Text(
                             "Let's watch a movies",
