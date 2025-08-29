@@ -37,7 +37,7 @@ class RentListScreen extends StatelessWidget {
                     : const Icon(Icons.movie),
                 title: Text(rental['title']),
                 subtitle: Text(
-                  "Status: ${rental['status']} \nTanggal: ${rental['tanggalSewa'].toDate()}",
+                  "Status: ${rental['status']} \nTanggal: ${rental['tanggalSewa'].toDate().toString().split(' ')[0]}",
                 ),
               );
             },
