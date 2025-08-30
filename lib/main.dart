@@ -7,12 +7,16 @@ import 'package:movie_app/core/bindings/initial_binding.dart';
 import 'package:movie_app/core/routes/app_pages.dart';
 import 'package:movie_app/core/routes/app_routes.dart';
 import 'package:movie_app/firebase_options.dart';
+import 'package:rive/rive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load environment variables from .env file
   await dotenv.load(fileName: ".env");
+
+  // rive init
+  await RiveNative.init();
 
   // Initialize Firebase instance
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
