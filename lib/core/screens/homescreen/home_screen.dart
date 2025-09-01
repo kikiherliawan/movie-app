@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/core/controller/auth_controller/auth_controller.dart';
 import 'package:movie_app/core/controller/movie_section_controller/movie_section_controller.dart';
+import 'package:movie_app/core/routes/app_routes.dart';
 import 'package:movie_app/core/widgets/movie_section.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _MovieListScreenState extends State<HomeScreen> {
                             () => Text(
                               'Hi, ${authController.username.value}',
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -56,9 +57,20 @@ class _MovieListScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.notifications_none),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.notifications_none),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          await authController.logout();
+                          Get.offAllNamed(AppRoutes.LOGIN);
+                        },
+                        icon: Icon(Icons.logout, color: Colors.red),
+                      ),
+                    ],
                   ),
                 ],
               ),
