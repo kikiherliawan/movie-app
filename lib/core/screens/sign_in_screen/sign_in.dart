@@ -16,6 +16,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final passwordController = TextEditingController();
 
   late FocusNode _passwordFocusNode;
+  late FocusNode _emailFocusNode;
 
   final RxBool obscurePassword = true.obs;
 
@@ -32,15 +33,14 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _initRive() async {
     _passwordFocusNode = FocusNode();
+    _emailFocusNode = FocusNode();
 
     _passwordFocusNode.addListener(() {
-      if (!_passwordFocusNode.hasFocus) {
-        final handsUp = _stateMachine.boolean('isHandsUp');
-        handsUp?.value = false;
-      } else {
-        final handsUp = _stateMachine.boolean('isHandsUp');
-        handsUp?.value = true;
-      }
+      _updateHandsUpState();
+    });
+
+    _passwordFocusNode.addListener(() {
+      _updateHandsUpState();
     });
 
     try {
@@ -63,6 +63,12 @@ class _SignInScreenState extends State<SignInScreen> {
       ever(controller.user, (user) {
         if (user != null && isRiveInitialized) {
           _stateMachine.trigger('trigSuccess')?.fire();
+
+          Future.delayed(Duration(seconds: 2), () {
+            if (mounted) {
+              Get.toNamed(AppRoutes.MAIN);
+            }
+          });
         }
       });
 
@@ -73,8 +79,29 @@ class _SignInScreenState extends State<SignInScreen> {
         }
       });
     } catch (e) {
-      print('Error loading Rive: $e');
       setState(() => isRiveInitialized = false);
+    }
+  }
+
+  void _updateHandsUpState() {
+    if (!isRiveInitialized) return;
+
+    final handsUp = _stateMachine.boolean('isHandsUp');
+    if (handsUp == null) return;
+
+    bool shouldShowHandsUp =
+        _passwordFocusNode.hasFocus && passwordController.text.isNotEmpty;
+
+    handsUp.value = shouldShowHandsUp;
+  }
+
+  void _updateLookState(String text) {
+    if (!isRiveInitialized) return;
+
+    final numLook = _stateMachine.number('numLook');
+    if (numLook != null) {
+      double lookValue = (text.length * 10.0).clamp(0.0, 100.0);
+      numLook.value = lookValue;
     }
   }
 
@@ -83,6 +110,7 @@ class _SignInScreenState extends State<SignInScreen> {
     emailController.dispose();
     passwordController.dispose();
     _passwordFocusNode.dispose();
+    _emailFocusNode.dispose();
 
     if (isRiveInitialized) {
       _riveFile.dispose();
@@ -124,6 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
               TextField(
                 controller: emailController,
+                focusNode: _emailFocusNode,
                 decoration: InputDecoration(
                   labelText: "Email",
                   border: OutlineInputBorder(
@@ -137,6 +166,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
               TextField(
                 controller: passwordController,
+                focusNode: _passwordFocusNode,
                 decoration: InputDecoration(
                   labelText: "Password",
                   border: OutlineInputBorder(
@@ -145,18 +175,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 obscureText: true,
                 onChanged: (text) {
-                  if (isRiveInitialized) {
-                    final numLook = _stateMachine.number('numLook');
-                    if (numLook != null) {
-                      double lookValue = (text.length * 10.0).clamp(0.0, 100.0);
-                      numLook.value = lookValue;
-                    }
+                  _updateLookState(text);
 
-                    final handsUp = _stateMachine.boolean('isHandsUp');
-                    if (handsUp != null && _passwordFocusNode.hasFocus) {
-                      handsUp.value = text.isNotEmpty;
-                    }
-                  }
+                  _updateHandsUpState();
                 },
               ),
 
@@ -164,13 +185,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
               Obx(() {
                 final isLoading = controller.isLoading.value;
-
-                if (isRiveInitialized) {
-                  final checking = _stateMachine.boolean('isChecking');
-                  if (checking != null) {
-                    checking.value = isLoading;
-                  }
-                }
 
                 return SizedBox(
                   height: 50,
@@ -183,21 +197,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     onPressed: isLoading
                         ? null
                         : () async {
-                            bool isPasswordFieldFocused =
-                                _passwordFocusNode.hasFocus;
-
-                            if (isRiveInitialized) {
-                              final handsUp = _stateMachine.boolean(
-                                'isHandsUp',
-                              );
-                              if (handsUp != null) {
-                                if (isPasswordFieldFocused) {
-                                  handsUp.value = true;
-                                } else {
-                                  handsUp.value = false;
-                                }
-                              }
-                            }
+                            FocusManager.instance.primaryFocus?.unfocus();
+                            await Future.delayed(Duration(milliseconds: 100));
+                            _updateHandsUpState();
 
                             if (emailController.text.isEmpty ||
                                 passwordController.text.isEmpty) {
@@ -226,12 +228,24 @@ class _SignInScreenState extends State<SignInScreen> {
                                 emailController.text.trim(),
                                 passwordController.text.trim(),
                               );
-                              FocusManager.instance.primaryFocus?.unfocus();
                             } catch (e) {
-                              //
+                              if (isRiveInitialized) {
+                                _stateMachine.trigger('trigFail')?.fire();
+                              }
                             }
                           },
-                    child: Text("Login"),
+                    child: isLoading
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.black,
+                              ),
+                            ),
+                          )
+                        : Text("Login"),
                   ),
                 );
               }),
