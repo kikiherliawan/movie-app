@@ -24,7 +24,7 @@ class InitialBinding extends Bindings {
 
   void _initiateController() {
     Get.put<AuthController>(AuthController());
-    Get.lazyPut<BottomNavController>(() => BottomNavController());
+    Get.put<BottomNavController>(BottomNavController());
     Get.lazyPut(() => MovieListController());
     Get.lazyPut(() => MovieSearchController());
     Get.lazyPut(() => MovieFilterController());
