@@ -3,7 +3,9 @@ import 'package:movie_app/core/network/dio_api_client.dart';
 import 'package:movie_app/core/response/movie_detail_response.dart';
 
 class MovieDetailController extends GetxController {
-  final DioApiClient _client = DioApiClient();
+  final DioApiClient client; // tidak langsung new, tapi lewat constructor
+
+  MovieDetailController({required this.client});
 
   var isLoading = false.obs;
   var movieDetail = Rxn<MovieDetailResponse>();
@@ -14,7 +16,7 @@ class MovieDetailController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final response = await _client.dio.get('/movie/$movieId');
+      final response = await client.dio.get('/movie/$movieId');
       movieDetail.value = MovieDetailResponse.fromJson(response.data);
     } catch (e) {
       errorMessage.value = e.toString();
