@@ -59,7 +59,6 @@ Map<String, dynamic> dummyMovieDetailJson = {
   'vote_count': 200,
 };
 
-// BACA: Function sederhana untuk membuat Response sukses
 Response<T> createSuccessResponse<T>(T data, String path) {
   return Response(
     data: data,
