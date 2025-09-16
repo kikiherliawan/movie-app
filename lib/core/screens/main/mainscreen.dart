@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movie_app/core/controller/bottom_nav_controller/buttom_nav_controller.dart';
@@ -12,7 +13,7 @@ class MainScreen extends StatelessWidget {
   final List<Widget> pages = [
     HomeScreen(),
     MovieListScreen(),
-    RentListScreen(),
+    RentListScreen(firestore: FirebaseFirestore.instance),
   ];
 
   @override

@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RentListScreen extends StatelessWidget {
-  const RentListScreen({super.key});
+  const RentListScreen({super.key, required this.firestore});
+  final FirebaseFirestore firestore;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Daftar Sewa Film')),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
+        stream: firestore
             .collection('orders') // ambil data dari collection orders
             .orderBy('tanggalSewa', descending: true) // urutkan terbaru dulu
             .snapshots(),

@@ -3,9 +3,8 @@ import 'package:movie_app/core/network/dio_api_client.dart';
 import 'package:movie_app/core/response/movie_detail_response.dart';
 
 class MovieDetailController extends GetxController {
-  final DioApiClient client; // tidak langsung new, tapi lewat constructor
-
   MovieDetailController({required this.client});
+  final DioApiClient client;
 
   var isLoading = false.obs;
   var movieDetail = Rxn<MovieDetailResponse>();

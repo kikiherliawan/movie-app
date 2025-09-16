@@ -3,14 +3,17 @@ import 'package:movie_app/core/response/movie_list_response.dart';
 import 'package:movie_app/core/services/movie_service.dart';
 
 class MovieSectionController extends GetxController {
+  MovieSectionController({MovieService? movieService})
+    : _movieService = movieService ?? MovieService();
+
+  final MovieService _movieService;
+
   var trendingMovies = <Result>[].obs;
   var popularMovies = <Result>[].obs;
   var upcomingMovies = <Result>[].obs;
   var koreanDramas = <Result>[].obs;
 
   var isLoading = true.obs;
-
-  final _movieService = MovieService();
 
   @override
   void onInit() {

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:movie_app/core/response/movie_detail_response.dart';
+import 'package:movie_app/core/response/movie_list_response.dart';
 
 MovieDetailResponse dummyMovieDetailResponse = MovieDetailResponse(
   adult: false,
@@ -58,6 +59,30 @@ Map<String, dynamic> dummyMovieDetailJson = {
   'vote_average': 7.5,
   'vote_count': 200,
 };
+
+final dummyResult = Result(
+  adult: false,
+  backdropPath: '/dummy.jpg',
+  genreIds: [],
+  id: 1,
+  originalLanguage: 'en',
+  originalTitle: 'Dummy Movie',
+  overview: 'This is a dummy movie',
+  popularity: 10.0,
+  posterPath: '/poster.jpg',
+  releaseDate: DateTime(2023, 10, 1),
+  title: 'Dummy Title',
+  video: false,
+  voteAverage: 7.5,
+  voteCount: 100,
+);
+
+final dummyMovieListResponse = MovieListResponse(
+  page: 1,
+  results: [dummyResult],
+  totalResults: 1,
+  totalPages: 1,
+);
 
 Response<T> createSuccessResponse<T>(T data, String path) {
   return Response(
