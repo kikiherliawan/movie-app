@@ -13,7 +13,7 @@ class MovieDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(MovieDetailController());
+    final controller = Get.put(MovieDetailController(client: DioApiClient()));
 
     controller.fetchMovieDetail(movieId);
 

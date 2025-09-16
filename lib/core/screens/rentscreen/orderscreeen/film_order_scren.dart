@@ -4,7 +4,7 @@ import 'package:movie_app/core/controller/order_controller/order_controller.dart
 import 'package:movie_app/core/response/movie_list_response.dart';
 
 class FilmOrderScreen extends StatefulWidget {
-  final Result movie; // model film yang udah lo punya
+  final Result movie;
 
   const FilmOrderScreen({super.key, required this.movie});
 
