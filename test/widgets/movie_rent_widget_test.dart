@@ -27,7 +27,6 @@ void main() {
       MaterialApp(home: RentListScreen(firestore: fakeFirestore)),
     );
 
-    // Biarkan snapshot selesai
     await tester.pump();
 
     expect(find.text('Belum ada film yang disewa'), findsOneWidget);
